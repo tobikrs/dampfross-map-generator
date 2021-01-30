@@ -21,16 +21,11 @@ export default {
       default: "#ff0000"
     }
   },
-  data() {
-    return {
-      prevShapePoints: []
-    };
-  },
   computed: {
     buildShapePoints() {
       let points = [];
       for (let side = 0; side < sides; side++) {
-        const angle = (Math.PI / 180) * (360 / sides) * side;
+        const angle = 2 * Math.PI * (side / sides);
         points.push({
           x: this.x + this.radius * Math.cos(angle),
           y: this.y + this.radius * Math.sin(angle)
@@ -46,22 +41,7 @@ export default {
     if (!this.provider.context) return;
 
     const ctx = this.provider.context;
-    const prevShape = this.prevShapePoints;
     const shape = this.buildShapePoints;
-
-    // clear old shape
-    if (prevShape.length > 0) {
-      ctx.beginPath();
-      ctx.moveTo(prevShape[0].x, prevShape[0].y);
-
-      for (let i = 1; i < prevShape.length; i++) {
-        ctx.lineTo(prevShape[i].x, prevShape[i].y);
-      }
-
-      ctx.closePath();
-      ctx.fillStyle = "white";
-      ctx.fill();
-    }
 
     // draw new shape
     if (shape.length > 0) {

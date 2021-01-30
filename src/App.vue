@@ -35,11 +35,14 @@ export default {
   methods: {
     getX(index) {
       return (
-        (index % this.columns) * this.radius * 2 * 3 / 4 + index * Math.floor(360 / this.columns * this.rows)
+        ((index % this.columns) * this.radius * 2 * 3) / 4 +
+        index * Math.floor((360 / this.columns) * this.rows)
       );
     },
     getY(index) {
-      return Math.floor(index / this.columns) * this.radius * Math.sqrt(3) / 2;
+      return (
+        (Math.floor(index / this.columns) * this.radius * Math.sqrt(3)) / 2
+      );
     }
   },
   mounted() {
