@@ -5,13 +5,12 @@
       v-app-bar-nav-icon
       v-toolbar-title Dampfross Map Editor
     v-main
-      v-container.fill-height(v-resize="onResize" ref="board")
-        board(style="width:100%; height:100%; background: #eee" ).fill-height
-          hexagon(
-            v-for="hex, index of hexagons"
-            :key="`hex_${index}`"
-            :hex="hex"
-            :color="hex.color")
+      board(style="background: #eee" @grid-resize="onGridResize")
+        hexagon(
+          v-for="hex, index of hexagons"
+          :key="`hex_${index}`"
+          :hex="hex"
+          :color="hex.color")
 </template>
 
 <script>
@@ -28,7 +27,7 @@ export default {
       width: 100,
       height: 100,
       ratio: Math.SQRT2,
-      columns: 20,
+      columns: 10,
       hexagons: []
     };
   },
@@ -37,18 +36,15 @@ export default {
       return Math.floor(this.columns / this.ratio);
     },
     hexSize() {
-      const size = (this.ratio * this.height) / this.columns;
+      const size = this.width / this.ratio / this.rows;
       return { x: size, y: size };
     }
   },
   methods: {
-    onResize() {
-      this.width = this.$refs.board.firstChild.clientWidth || this.width;
-      this.height = this.$refs.board.firstChild.clientHeight || this.height;
+    onGridResize(width, height) {
+      this.width = width;
+      this.height = height;
     }
-  },
-  mounted() {
-    this.onResize();
   },
   watch: {
     hexSize: {
