@@ -1,6 +1,6 @@
 <template lang="pug">
   .board-wrapper
-    canvas(ref="board")
+    canvas(ref="canvas")
     slot
 </template>
 
@@ -18,11 +18,12 @@ export default {
       provider: this.provider
     };
   },
+  methods: {},
   mounted() {
-    this.provider.context = this.$refs.board.getContext("2d");
+    this.provider.context = this.$refs.canvas.getContext("2d");
 
-    this.$refs.board.width = this.$el.clientWidth;
-    this.$refs.board.height = this.$el.clientHeight;
+    this.$refs.canvas.width = this.$el.clientWidth;
+    this.$refs.canvas.height = this.$el.clientHeight;
   }
 };
 </script>

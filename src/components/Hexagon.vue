@@ -1,20 +1,10 @@
 <script>
-const sides = 6;
-
 export default {
   inject: ["provider"],
   props: {
-    x: {
-      type: Number,
-      default: 0
-    },
-    y: {
-      type: Number,
-      default: 0
-    },
-    radius: {
-      type: Number,
-      default: 42
+    hex: {
+      type: Object,
+      required: true
     },
     color: {
       type: String,
@@ -22,58 +12,41 @@ export default {
     }
   },
   computed: {
-    buildShapePoints() {
-      let points = [];
-      for (let side = 0; side < sides; side++) {
-        const angle = 2 * Math.PI * (side / sides);
-        points.push({
-          x: this.x + this.radius * Math.cos(angle),
-          y: this.y + this.radius * Math.sin(angle)
-        });
-      }
-
-      return points;
+    corners() {
+      return this.$root.grid.cornersOfHex(this.hex);
+    },
+    center() {
+      return this.$root.grid.centerOfHex(this.hex);
     }
   },
-  // eslint-disable-next-line vue/require-render-return
-  render() {
+  render(h) {
     // The context from parent canvas component may not be injected by the time this render function runs for the first time.
     if (!this.provider.context) return;
 
     const ctx = this.provider.context;
-    const shape = this.buildShapePoints;
 
     // draw new shape
-    if (shape.length > 0) {
-      ctx.beginPath();
-      ctx.moveTo(shape[0].x, shape[0].y);
-
-      for (let i = 1; i < shape.length; i++) {
-        ctx.lineTo(shape[i].x, shape[i].y);
-      }
-
-      ctx.closePath();
-      ctx.fillStyle = this.color;
-      ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(this.corners[0].x, this.corners[0].y);
+    for (let i = 1; i < this.corners.length; i++) {
+      ctx.lineTo(this.corners[i].x, this.corners[i].y);
     }
+    ctx.closePath();
+    ctx.fillStyle = this.color;
+    ctx.stroke();
 
     ctx.fillStyle = "black";
     ctx.textAlign = "center";
-    // ctx.font = "10px sans-serif";
-
-    // for (let i = 0; i < shape.length; i++) {
-    //   ctx.fillText(i + 1, shape[i].x, shape[i].y);
-    // }
 
     // draw coord
-    ctx.font = "28px sans-serif";
+    ctx.font = "20px sans-serif";
     ctx.fillText(
-      `(${Math.floor(this.x)},${Math.floor(this.y)})`,
-      this.x,
-      this.y
+      `${this.hex.q},${this.hex.r},${this.hex.s}`,
+      this.center.x,
+      this.center.y
     );
 
-    this.prevShapePoints = shape;
+    return h();
   }
 };
 </script>
